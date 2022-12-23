@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kolotree-gate
+  labels:
+    app: kolotree-gate
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+  selector:
+    app: kolotree-gate
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kolotree-gate
+  labels:
+    app: kolotree-gate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kolotree-gate
+  template:
+    metadata:
+      labels:
+        app: kolotree-gate
+    spec:
+      containers:
+        - name: kolotree-gate
+          image: culaja/kolotree-gate:0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: ApiKey
+              value: Kolotree1234
+      nodeSelector:
+        kubernetes.io/hostname: kt-worker1
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kolotree-gate-ingress
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - host: gate.kolotree.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kolotree-gate
+                port:
+                  number: 80

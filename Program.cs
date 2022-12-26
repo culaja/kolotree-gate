@@ -15,10 +15,16 @@ app.MapGet("/{apiKey}", (string apiKey) =>
     {
         return "Dje ces kraaalju";
     }
-    
+
     controller.Write(pin, PinValue.Low);
-    Thread.Sleep(TimeSpan.FromSeconds(app.Configuration.GetValue<int>("TriggerIntervalInSec")));
-    controller.Write(pin, PinValue.High);
+    try
+    {
+        Thread.Sleep(TimeSpan.FromSeconds(app.Configuration.GetValue<int>("TriggerIntervalInSec")));
+    }
+    finally
+    {
+        controller.Write(pin, PinValue.High);
+    }
 
     return "Otvoreno kraaalju!!!!!!";
 });

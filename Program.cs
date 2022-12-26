@@ -1,7 +1,13 @@
 using System.Device.Gpio;
+// ReSharper disable AccessToDisposedClosure
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
+
+using var controller = new GpioController();
+int pin = 18;
+controller.OpenPin(pin, PinMode.Output);
+controller.Write(pin, PinValue.High );
 
 app.MapGet("/{apiKey}", (string apiKey) =>
 {
@@ -10,12 +16,9 @@ app.MapGet("/{apiKey}", (string apiKey) =>
         return "Dje ces kraaalju";
     }
     
-    int pin = 18;
-    using var controller = new GpioController();
-    controller.OpenPin(pin, PinMode.Output);
-    controller.Write(pin, PinValue.High );
-    Thread.Sleep(3000);
     controller.Write(pin, PinValue.Low);
+    Thread.Sleep(TimeSpan.FromSeconds(app.Configuration.GetValue<int>("TriggerIntervalInSec")));
+    controller.Write(pin, PinValue.High);
 
     return "Otvoreno kraaalju!!!!!!";
 });

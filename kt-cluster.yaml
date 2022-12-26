@@ -29,7 +29,9 @@ spec:
     spec:
       containers:
         - name: kolotree-gate
-          image: culaja/kolotree-gate:0.2
+          image: culaja/kolotree-gate:0.3
+          securityContext:
+            privileged: true
           imagePullPolicy: Always
           ports:
             - containerPort: 80

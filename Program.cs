@@ -17,6 +17,7 @@ app.MapGet("/{apiKey}", (string apiKey) =>
     }
 
     controller.Write(pin, PinValue.Low);
+    Console.WriteLine("[ON] Relay");
     try
     {
         Thread.Sleep(TimeSpan.FromSeconds(app.Configuration.GetValue<int>("TriggerIntervalInSec")));
@@ -24,6 +25,7 @@ app.MapGet("/{apiKey}", (string apiKey) =>
     finally
     {
         controller.Write(pin, PinValue.High);
+        Console.WriteLine("[OFF] Relay");
     }
 
     return "Otvoreno kraaalju!!!!!!";

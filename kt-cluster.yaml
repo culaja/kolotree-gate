@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: kolotree-gate
-          image: culaja/kolotree-gate:0.6
+          image: culaja/kolotree-gate:0.7
           securityContext:
             privileged: true
           imagePullPolicy: Always
